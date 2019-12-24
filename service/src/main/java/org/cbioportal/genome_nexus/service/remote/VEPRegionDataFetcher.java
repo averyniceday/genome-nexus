@@ -63,6 +63,7 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
     public DBObject fetchRawValue(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException
     {
+        System.out.println("requestBody for fetchRawValue in VEPRegionDataFetcher: " + requestBody.toString());
         return this.postForObject(this.URI.replace("/" + PLACEHOLDER, ""), requestBody);
     }
 

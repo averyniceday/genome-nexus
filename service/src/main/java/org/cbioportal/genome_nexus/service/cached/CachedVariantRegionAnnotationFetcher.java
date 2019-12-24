@@ -8,6 +8,7 @@ import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationReposit
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.cbioportal.genome_nexus.service.remote.VEPIdDataFetcher;
+import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
 import org.cbioportal.genome_nexus.service.remote.VEPRegionDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +60,30 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalReso
         return instance.getVariantId();
     }
 
+    @Override
+    protected List<Set<String>> generateChunks(Set<String> needToFetch)
+    {
+        List<Set<String>> chunks = new ArrayList<>();
+        List<String> list = new ArrayList<>(needToFetch);
+
+        int chunkSize = this.maxPageSize;
+
+        for (int i = 0; i < list.size(); i += chunkSize)
+        {
+            Set<String> chunk = new LinkedHashSet<>();
+            // append the next slice
+            // VEP requires ids to be sorted
+            List<String> sortedChunk = list.subList(i, Math.min(list.size(), i + chunkSize));
+            Collections.sort(sortedChunk, new NaturalOrderComparator());
+
+            chunk.addAll(sortedChunk);
+
+            chunks.add(chunk);
+        }
+
+        return chunks;
+    }
+    
     @Override
     protected String extractId(DBObject dbObject)
     {

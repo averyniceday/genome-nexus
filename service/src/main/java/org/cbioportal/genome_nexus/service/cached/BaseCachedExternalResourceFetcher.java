@@ -166,9 +166,11 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                                  Map<String, T> idToInstance,
                                  boolean saveValues) throws ResourceMappingException, HttpClientErrorException
     {
+        System.out.println("\n\nincoming things to fetch: " + needToFetch.toString());
         // send up to maxPageSize entities per request
         for (Set<String> subSet: this.generateChunks(needToFetch))
         {
+            System.out.println("\n\nthis is the subSet chunk (should be sorted): " + subSet.toString());
             DBObject rawValue = null;
 
             try {
@@ -184,7 +186,9 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                     // this does not contain all the information obtained from the web service
                     // only the fields mapped to the VariantAnnotation model will be returned
                     List<T> fetched = this.transformer.transform(rawValue, this.type);
+                    System.out.print("\n\nThis is the returned content:" + fetched.toString());
                     fetched.forEach(t -> idToInstance.put(this.extractId(t), t));
+                    System.out.print("\n\nThis is the unsorted (?) returned content:" + fetched.toString());
 
                     // save everything to the cache as a properly parsed JSON
                     if (saveValues) {
