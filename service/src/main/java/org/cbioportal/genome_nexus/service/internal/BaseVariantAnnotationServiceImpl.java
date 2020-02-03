@@ -159,13 +159,24 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
 
     private List<VariantAnnotation> getVariantAnnotationsExternally(List<String> variants)
             throws VariantAnnotationWebServiceException {
+        
+        System.out.println("HERE I AM WOOOOOOO");
+        for (String variant : variants) {
+            System.out.println("VARAINT---> " + variant);
+        }
+
         List<VariantAnnotation> variantAnnotations = null;
 
         List<String> normalizedVariants = variants.stream().map(v -> this.normalizeVariant(v)).collect(Collectors.toList());
+        System.out.println("HERE I AM WOOOOOOO");
+        for (String variant : normalizedVariants) {
+            System.out.println("VARAINT---> " + variant);
+        }
 
         try {
             // get the annotations from the web service and save it to the DB
             variantAnnotations = this.resourceFetcher.fetchAndCache(normalizedVariants);
+            System.out.println(variantAnnotations.size());
         } catch (HttpClientErrorException e) {
             // in case of web service error, throw an exception to indicate that there is a
             // problem with the service.
