@@ -322,7 +322,14 @@ public class NotationConverter
     public List<String> genomicToEnsemblRestRegion(List<GenomicLocation> genomicLocations)
     {
         List<String> ensemblRestRegionsList = new ArrayList<>();
-        ensemblRestRegionsList.addAll(this.genomicToEnsemblRestRegionMap(genomicLocations).keySet());
+        //ensemblRestRegionsList.addAll(this.genomicToEnsemblRestRegionMap(genomicLocations).keySet());
+
+        for (GenomicLocation location : genomicLocations) { 
+            String ensemblRestRegion = this.genomicToEnsemblRestRegion(location);
+            if (ensemblRestRegion != null) {
+                ensemblRestRegionsList.add(ensemblRestRegion);
+            }
+        }
 
         return ensemblRestRegionsList;
     }

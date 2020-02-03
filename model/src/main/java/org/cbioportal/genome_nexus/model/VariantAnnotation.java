@@ -63,6 +63,7 @@ public class VariantAnnotation
     private List<ColocatedVariant> colocatedVariants;
     private List<IntergenicConsequences> intergenicConsequences;
     private List<TranscriptConsequence> transcriptConsequences;
+    private Boolean successfullyAnnotated;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
@@ -87,6 +88,7 @@ public class VariantAnnotation
         this.variant = variant;
         this.annotationJSON = annotationJSON;
         this.dynamicProps = new LinkedHashMap<>();
+        this.successfullyAnnotated = !(annotationJSON == null);
     }
 
     public String getVariant()
@@ -271,26 +273,31 @@ public class VariantAnnotation
     }
 
     public String getHgvsg() {
-        if (this.getVariantId().contains("g."))
+        if (this.getVariantId() != null && this.getVariantId().contains("g."))
         {
             return this.getVariantId();
-        }
-        // id is not of hgvsg format
-        else {
-            // determine hgvsg from VEP output
+        } else if (this.getTranscriptConsequences() != null) {
+            // id is not of hgvsg format
             for (TranscriptConsequence ts : this.getTranscriptConsequences()) {
                 if (ts.getHgvsg() != null && !ts.getHgvsg().isEmpty()) {
                     return ts.getHgvsg();
                 }
-
             }
-            // TODO: check intergenic if still no hgvsg
+        } else {
             return null;
         }
     }
 
     public void setPtmAnnotation(PtmAnnotation ptmAnnotation) {
         this.ptmAnnotation = ptmAnnotation;
+    }
+
+    public void setSuccessfullyAnnotated(Boolean successfullyAnnotated) {
+        this.successfullyAnnotated = successfullyAnnotated;
+    }
+
+    public Boolean setSuccessfullyAnnotated() {
+        return successfullyAnnotated;
     }
 
     public void setDynamicProp(String key, Object value)
