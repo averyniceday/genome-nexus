@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository>
+public class CachedVariantRegionAnnotationFetcher extends BaseCachedVariantAnnotationFetcher
 {
     @Autowired
     public CachedVariantRegionAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
@@ -65,33 +65,4 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalReso
         return (String)dbObject.get("input");
     }
 
-    @Override
-    public List<VariantAnnotation> fetchAndCache(List<String> ids) throws ResourceMappingException
-    {
-        Map<String, VariantAnnotation> variantResponse = super.testFunction(ids); 
-        System.out.println("operating in variant region fetch and cache override");
-        for (String variantId : variantResponse.keySet()) {
-            System.out.println(variantId);
-            if (variantResponse.get(variantId) == null) {
-                // TODO:
-                // need a way to set ID to match the format of all other variants passed in
-                // also there's some weird thing with setting hgvs based on id needing g.* in front or something like that
-                // in the VariantAnnotation model
-                VariantAnnotation fakeVariant = new VariantAnnotation(variantId);
-                variantResponse.put(variantId, fakeVariant);
-            } else {
-                variantResponse.get(variantId).setSuccessfullyAnnotated(true);
-            }
-        }
-        // some util function to return response (values) with duplicates
-        // need to pass in a list representing indexes of original request
-        List<VariantAnnotation> values = new ArrayList();
-        for (String id : ids) {
-           values.add(variantResponse.get(id));
-        } 
-        //List<VariantAnnotation> values = new ArrayList(variantResponse.values());
-        //values.removeIf(Objects::isNull);
-        //List<VariantAnnotation> annotations = super.fetchAndCache(ids);
-        return values;
-    }
 }
