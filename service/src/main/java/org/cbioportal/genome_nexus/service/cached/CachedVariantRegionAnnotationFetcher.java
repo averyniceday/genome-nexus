@@ -53,16 +53,4 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedVariantAnnot
         );
     }
 
-    @Override
-    protected String extractId(VariantAnnotation instance)
-    {
-        return instance.getVariantId();
-    }
-
-    @Override
-    protected String extractId(DBObject dbObject)
-    {
-        return (String)dbObject.get("input");
-    }
-
 }

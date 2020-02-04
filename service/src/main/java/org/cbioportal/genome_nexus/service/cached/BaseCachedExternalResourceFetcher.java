@@ -80,13 +80,14 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 "Will not attempt to store variant in Mongo database.");
             saveRawValue = false;
         }
-
+        System.out.println("WOOOW SERIOUSLY?");
         if (!instance.isPresent())
         {
             // get the annotation from the web service and save it to the DB
             try {
                 // get the raw annotation string from the web service
                 DBObject rawValue = this.fetcher.fetchRawValue(id);
+                System.out.println("t'was present WOOOW SERIOUSLY?");
                 // construct an instance to return:
                 // this does not contain all the information obtained from the web service
                 // only the fields mapped to the VariantAnnotation model will be returned
@@ -107,12 +108,17 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 // due to the variant annotation key being too large to index
                 LOG.info(e.getLocalizedMessage());
             } catch (HttpServerErrorException e) {
+                System.out.println("was somewhere here t'was present WOOOW SERIOUSLY?");
                 // failure fetching external resource
                 LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
+            } catch (Exception e) {
+                System.out.println("here we go");
             }
         }
 
+        System.out.println("am I here?");
         try {
+            System.out.println("really don't expect to get here");
             return instance.get();
         } catch (NoSuchElementException e) {
             return null;

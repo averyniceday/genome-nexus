@@ -49,63 +49,33 @@ public abstract class BaseCachedVariantAnnotationFetcher
     {
         super(collection, repository, type, fetcher, transformer, maxPageSize);
     }
-/*
-    public T fetchAndCache(String id) throws ResourceMappingException
+   
+    @Override 
+    public VariantAnnotation fetchAndCache(String id) throws ResourceMappingException
     {
-        boolean saveRawValue = true;
-        Optional<T> instance = null;
-
-        if (!isValidId(id)) {
-            return null;
+        System.out.println("HERE I AM BOINGO");
+        VariantAnnotation variantAnnotation = super.fetchAndCache(id);
+        if (variantAnnotation == null) {
+            System.out.println("HERE I AM DOINGO");
+            variantAnnotation = new VariantAnnotation(id);
+        } else {
+            variantAnnotation.setSuccessfullyAnnotated(true);
         }
-
-        try {
-            instance = this.repository.findById(id);
-        }
-        catch (DataAccessResourceFailureException e) {
-            LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
-                "Will not attempt to store variant in Mongo database.");
-            saveRawValue = false;
-        }
-
-        if (!instance.isPresent())
-        {
-            // get the annotation from the web service and save it to the DB
-            try {
-                // get the raw annotation string from the web service
-                DBObject rawValue = this.fetcher.fetchRawValue(id);
-                // construct an instance to return:
-                // this does not contain all the information obtained from the web service
-                // only the fields mapped to the VariantAnnotation model will be returned
-                List<T> list = this.transformer.transform(rawValue, this.type);
-
-                if (list.size() > 0) {
-                    instance = Optional.ofNullable(list.get(0));
-                }
-
-                // save everything to the cache as a properly parsed JSON
-                if (saveRawValue) {
-                    this.repository.saveDBObject(this.collection, id, rawValue);
-                }
-            }
-            catch (DataIntegrityViolationException e) {
-                // in case of data integrity violation exception, do not bloat the logs
-                // this is thrown when the annotationJSON can't be stored by mongo
-                // due to the variant annotation key being too large to index
-                LOG.info(e.getLocalizedMessage());
-            } catch (HttpServerErrorException e) {
-                // failure fetching external resource
-                LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
-            }
-        }
-
-        try {
-            return instance.get();
-        } catch (NoSuchElementException e) {
-            return null;
-        }
+        return variantAnnotation;
     }
-*/
+    
+    @Override
+    protected String extractId(VariantAnnotation instance)
+    {
+        return instance.getVariantId();
+    }
+
+    @Override
+    protected String extractId(DBObject dbObject)
+    {
+        return (String)dbObject.get("input");
+    }
+
     @Override
     public List<VariantAnnotation> fetchAndCache(List<String> ids) throws ResourceMappingException
     {

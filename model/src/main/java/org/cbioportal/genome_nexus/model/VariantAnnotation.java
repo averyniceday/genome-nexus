@@ -297,7 +297,7 @@ public class VariantAnnotation
         this.successfullyAnnotated = successfullyAnnotated;
     }
 
-    public Boolean setSuccessfullyAnnotated() {
+    public Boolean getSuccessfullyAnnotated() {
         return successfullyAnnotated;
     }
 
