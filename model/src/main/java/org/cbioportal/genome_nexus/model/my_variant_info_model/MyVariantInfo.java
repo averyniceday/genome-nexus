@@ -31,9 +31,6 @@ public class MyVariantInfo
     @Field(value = "cosmic")
     private Cosmic cosmic;
 
-    @Field(value = "clinvar")
-    private ClinVar clinVar;
-
     @Field(value = "mutdb")
     private Mutdb mutdb;
 
@@ -105,14 +102,6 @@ public class MyVariantInfo
 
     public void setCosmic(Cosmic cosmic) {
         this.cosmic = cosmic;
-    }
-
-    public ClinVar getClinVar() {
-        return clinVar;
-    }
-
-    public void setClinVar(ClinVar clinVar) {
-        this.clinVar = clinVar;
     }
 
     public Mutdb getMutdb() {
